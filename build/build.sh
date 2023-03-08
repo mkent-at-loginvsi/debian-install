@@ -87,7 +87,7 @@ fi
 
 # Download Appliance VHD zip
 applianceFileZip="AZ-VA-LoginEnterprise-4.8.10.zip"
-
+applianceFileVhd="AZ-VA-LoginEnterprise-4.8.10.vhd"
 echo "----------------------------------------------------------------"
 echo "Downloading Virtual Appliance to $BUILD_DIR/$applianceFileZip"
 echo "----------------------------------------------------------------"
@@ -102,8 +102,6 @@ echo "Unzipping Virtual Appliance VHD $BUILD_DIR/$applianceFileZip"
 echo "----------------------------------------------------------------"
 dpkg -l | grep -qw unzip || sudo apt install -y unzip
 
-applianceFileVhd="${applianceFileZip/zip/vhd}"
-echo "applianceFileVhd"
 if ! [ -f $BUILD_DIR/$applianceFileVhd ]; then
   unzip -d $BUILD_DIR $BUILD_DIR/$applianceFileZip
 fi
