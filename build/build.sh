@@ -101,6 +101,7 @@ echo "Unzipping Virtual Appliance VHD $BUILD_DIR/$applianceFileZip"
 echo "----------------------------------------------------------------"
 dpkg -l | grep -qw unzip || sudo apt install -y unzip
 applianceFileVhd=${applianceFileZip/zip/vhd}
+echo "applianceFileVhd"
 if ! [ -f "$BUILD_DIR/$applianceFileVhd ]; then
   unzip -d $BUILD_DIR $BUILD_DIR/$applianceFileZip
 fi
