@@ -86,22 +86,23 @@ if ! [ -d /media/iso/update ]; then
 fi
 
 # Download Appliance VHD zip
-applianceFile="AZ-VA-LoginEnterprise-4.8.10.zip"
+applianceFileZip="AZ-VA-LoginEnterprise-4.8.10.zip"
 echo "----------------------------------------------------------------"
-echo "Downloading Virtual Appliance to $BUILD_DIR/$applianceFile"
+echo "Downloading Virtual Appliance to $BUILD_DIR/$applianceFileZip"
 echo "----------------------------------------------------------------"
 
-if ! [ -f $BUILD_DIR/$applianceFile ]; then
-  curl -o $BUILD_DIR/$applianceFile https://loginvsidata.s3.eu-west-1.amazonaws.com/LoginEnterprise/VirtualAppliance/$applianceFile
+if ! [ -f $BUILD_DIR/$applianceFileZip ]; then
+  curl -o $BUILD_DIR/$applianceFileZip https://loginvsidata.s3.eu-west-1.amazonaws.com/LoginEnterprise/VirtualAppliance/$applianceFileZip
 fi
 
 # Unzip VHD
 echo "----------------------------------------------------------------"
-echo "Unzipping Virtual Appliance VHD $BUILD_DIR/$applianceFile"
+echo "Unzipping Virtual Appliance VHD $BUILD_DIR/$applianceFileZip"
 echo "----------------------------------------------------------------"
 dpkg -l | grep -qw unzip || sudo apt install -y unzip
-if ! [ -f $BUILD_DIR/"${applianceFile/zip/vhd}" ]; then
-  unzip -d $BUILD_DIR $BUILD_DIR/$applianceFile
+$applianceFileVhd=${applianceFileZip/zip/vhd}
+if ! [ -f "$BUILD_DIR/$applianceFileVhd ]; then
+  unzip -d $BUILD_DIR $BUILD_DIR/$applianceFileZip
 fi
 
 # Mount VHD
