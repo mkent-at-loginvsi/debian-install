@@ -1,4 +1,11 @@
 #!/bin/bash
+while getopts r: flag
+do
+  case "${flag}" in 
+    r) resumedir=${OPTARG};;
+  esac
+done 
+
 echo "----------------------------------------------------------------"
 echo "The script you are running has basename $( basename -- "$0"; ), dirname $( dirname -- "$0"; )";
 echo "The present working directory is $( pwd; )";
@@ -12,7 +19,7 @@ echo "----------------------------------------------------------------"
 
 # Disk space check
 FREE=`df -k / --output=avail "$PWD" | tail -n1`   # df -k not df -h
-if [[ $FREE -lt 38990768 ]]; then               # 40G = 26*1024*1024k (Kibibyte)
+if [ $FREE -lt 38990768 ]; then               # 40G = 26*1024*1024k (Kibibyte)
      # less than 26GBs free!
      echo "----------------------------------------------------------------"
      echo "The installation requires 40GB Free on the root partition (/)"
@@ -20,6 +27,7 @@ if [[ $FREE -lt 38990768 ]]; then               # 40G = 26*1024*1024k (Kibibyte)
      #exit
 fi
 
+if [-z "$resumedir"]; then
 # Create Build Directory
 echo "----------------------------------------------------------------"
 echo "Creating Build Directory"
@@ -32,6 +40,19 @@ echo "----------------------------------------------------------------"
 echo "Relative Build Direcory: $dir"
 echo "Full Path Build Directory: $BUILD_DIR"
 echo "----------------------------------------------------------------"
+else
+# Resume Build, Set Build Directory
+echo "----------------------------------------------------------------"
+echo "Resuming Build in Directory"
+echo "----------------------------------------------------------------"
+dir=$resumedir
+export BUILD_DIR="$PWD/$dir"
+out_dir="appliance"
+echo "----------------------------------------------------------------"
+echo "Relative Build Direcory: $dir"
+echo "Full Path Build Directory: $BUILD_DIR"
+echo "----------------------------------------------------------------"
+fi
 
 # Download ISO
 isoFile="LoginEnterprise-4.8.10.iso"
@@ -78,7 +99,7 @@ fi
 echo "----------------------------------------------------------------"
 echo "Unzipping Virtual Appliance VHD $BUILD_DIR/$applianceFile"
 echo "----------------------------------------------------------------"
-sudo apt install -y unzip
+dpkg -l | grep -qw unzip || sudo apt install -y unzip
 if ! [ -f $BUILD_DIR/"${applianceFile/zip/vhd}" ]; then
   unzip -d $BUILD_DIR $BUILD_DIR/$applianceFile
 fi
