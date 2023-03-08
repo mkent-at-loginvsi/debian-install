@@ -27,7 +27,7 @@ if [ $FREE -lt 38990768 ]; then               # 40G = 26*1024*1024k (Kibibyte)
      #exit
 fi
 
-if [-z "$resumedir"]; then
+if [ -z "$resumedir"]; then
 # Create Build Directory
 echo "----------------------------------------------------------------"
 echo "Creating Build Directory"
