@@ -67,7 +67,7 @@ systemctl restart sshd
 echo "----------------------------------------------------------------"
 echo "### Unzipping arhive and installing files ###"
 echo "----------------------------------------------------------------"
-mkdir $temp_dir
+mkdir -p $temp_dir
 tar -zxvf $tar_file -C $temp_dir
 cp -R $temp_dir/appliance/loginvsi /
 cp -R $temp_dir/appliance/usr /
@@ -85,9 +85,8 @@ chown root:root /usr/bin/loginvsid
 echo "----------------------------------------------------------------"
 echo "### Uninstalling Docker ###"
 echo "----------------------------------------------------------------"
-#yum update -y
-sh -c "$(curl -fsSL https://get.docker.com)"
-#yum module remove -y container-tools
+
+#sh -c "$(curl -fsSL https://get.docker.com)"
 
 sudo apt-get remove -y docker \
                          docker-engine \
@@ -97,12 +96,12 @@ sudo apt-get remove -y docker \
 
 sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
 
-#yum install -y yum-utils
+
 #Install packages
 #rpm -ivh --nodeps $temp_dir/appliance/*.rpm
 #sudo yum install -y device-mapper-persistent-data lvm2
 
-sudo apt-get update
+sudo apt-get update -qq
 
 sudo apt-get install \
      ca-certificates \
@@ -110,7 +109,8 @@ sudo apt-get install \
      gnupg \
      lsb-release
 
-sudo sh get-docker.sh
+#sudo sh get-docker.sh
+sh -c "$(curl -fsSL https://get.docker.com)"
 
 echo "----------------------------------------------------------------"
 echo "### Starting Docker ###"
