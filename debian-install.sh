@@ -18,7 +18,7 @@ if [ $EUID -ne 0 ]; then
 fi
 
 FREE=`df -k / --output=avail "$PWD" | tail -n1`   # df -k not df -h
-if [ $FREE -lt 27262976 ]; then               # 26G = 26*1024*1024k
+if [ $FREE -lt 27262976 ]; then # 26G = 26*1024*1024k 
      # less than 26GBs free!
      echo "----------------------------------------------------------------"
      echo "### The installation requires 26GB Free on the root partition (/) ###"
