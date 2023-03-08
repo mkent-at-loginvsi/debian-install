@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 while getopts r: flag
 do
   case "${flag}" in 
