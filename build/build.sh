@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 while getopts r: flag
 do
   case "${flag}" in 
@@ -87,6 +87,7 @@ fi
 
 # Download Appliance VHD zip
 applianceFileZip="AZ-VA-LoginEnterprise-4.8.10.zip"
+
 echo "----------------------------------------------------------------"
 echo "Downloading Virtual Appliance to $BUILD_DIR/$applianceFileZip"
 echo "----------------------------------------------------------------"
@@ -103,7 +104,7 @@ dpkg -l | grep -qw unzip || sudo apt install -y unzip
 
 applianceFileVhd="${applianceFileZip/zip/vhd}"
 echo "applianceFileVhd"
-if ! [ -f "$BUILD_DIR/$applianceFileVhd" ]; then
+if ! [ -f $BUILD_DIR/$applianceFileVhd ]; then
   unzip -d $BUILD_DIR $BUILD_DIR/$applianceFileZip
 fi
 
