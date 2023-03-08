@@ -160,7 +160,8 @@ cp -f /mnt/vhd/etc/systemd/system/pi_guard.service $build_out/etc/systemd/system
 #Copy firstrun, daemon and Menuing
 mkdir -p $build_out/usr/bin
 cp -f /mnt/vhd/usr/bin/loginvsid $build_out/usr/bin/loginvsid
-curl -o $build_out/usr/bin/pdmenu https://github.com/mkent-at-loginvsi/rhel-install/raw/main/pdmenu/pdmenu.rhel
+cp -f /mnt/vhd/usr/bin/pdmenu $build_out/usr/bin/pdmenu
+#curl -o $build_out/usr/bin/pdmenu https://github.com/mkent-at-loginvsi/rhel-install/raw/main/pdmenu/pdmenu.rhel
 
 # Fix firstrun
 
