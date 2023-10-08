@@ -1,7 +1,8 @@
 #!/bin/bash
 temp_dir="/install/debian-install"
 tar_file="appliance.tar.gz"
-password="admin"
+username="admin"
+
 
 # Need 2CPU
 # Need 4GB RAM
@@ -67,7 +68,26 @@ echo "### Create Admin Account ###"
 echo "----------------------------------------------------------------"
 adduser -m admin
 usermod -aG sudo admin
-echo "admin:$password" | chpasswd
+
+while :
+do
+     echo ""
+     read -ersp "Please enter a new password for $username: " password
+     echo ""
+     read -ersp "Please confirm the new password: " password2
+     echo ""
+     if [ "$password" != "$password2" ]; then
+          echo "Passwords do not match, try again..."
+     elif [[ "$password" == *[\"]* ]]; then
+          echo "Password cannot contain a double quote (\") character"
+     elif [[ "$password" == "" ]]; then
+          echo "Password cannot be empty"
+     else
+          echo "admin:$password" | chpasswd
+          echo "Password updated successfully"
+          break
+     fi
+done
 
 echo "----------------------------------------------------------------"
 echo "### Allow ssh Password Authentication ###"
