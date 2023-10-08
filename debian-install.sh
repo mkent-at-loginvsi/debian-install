@@ -64,8 +64,7 @@ echo '/swapfile swap swap defailts 0 0'|sudo tee -a /etc/fstab
 echo "----------------------------------------------------------------"
 echo "### Create Admin Account ###"
 echo "----------------------------------------------------------------"
-sudo adduser -m admin
-sudo usermod -aG wheel admin
+sudo adduser -m adminrR@239
 sudo usermod -aG sudo admin
 
 echo "----------------------------------------------------------------"
@@ -84,12 +83,12 @@ net.ipv6.conf.lo.disable_ipv6 = 1
 net.ipv4.ip_forward = 1
 " >>/etc/sysctl.conf
 
-echo "
-{
-  "log-driver": "json-file",
-  "log-opts": {"max-size": "100m", "max-file": "3"}
-}
-" >>/etc/docker/daemon.json
+# echo "
+# {
+#   "log-driver": "json-file",
+#   "log-opts": {"max-size": "100m", "max-file": "3"}
+# }
+# " >>/etc/docker/daemon.json
 
 echo "----------------------------------------------------------------"
 echo "### Set Defaults ###"
