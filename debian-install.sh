@@ -83,13 +83,6 @@ net.ipv6.conf.lo.disable_ipv6 = 1
 net.ipv4.ip_forward = 1
 " >>/etc/sysctl.conf
 
-# echo "
-# {
-#   "log-driver": "json-file",
-#   "log-opts": {"max-size": "100m", "max-file": "3"}
-# }
-# " >>/etc/docker/daemon.json
-
 echo "----------------------------------------------------------------"
 echo "### Set Defaults ###"
 echo "----------------------------------------------------------------"
@@ -98,7 +91,6 @@ apt purge python2.7-minimal libpython2.7-minimal -y
 
 # create python to python3 symbolic link
 ln -s /usr/bin/python3 /usr/bin/python
-
 
 echo "----------------------------------------------------------------"
 echo "### Unzipping arhive and installing files ###"
@@ -130,16 +122,12 @@ sudo apt-get remove -y docker \
                          containerd \
                          runc
 
-sudo apt-get purge docker-ce \
+sudo apt-get purge -y docker-ce \
                     docker-ce-cli \
                     containerd.io \
                     docker-buildx-plugin \
                     docker-compose-plugin \
                     docker-ce-rootless-extras
-
-#Install packages
-#rpm -ivh --nodeps $temp_dir/appliance/*.rpm
-#sudo yum install -y device-mapper-persistent-data lvm2
 
 sudo apt-get update -qq
 
@@ -150,19 +138,16 @@ sudo apt-get install \
      lsb-release
 
 #sudo sh get-docker.sh
-sh -c "$(curl -fsSL https://get.docker.com)"
+#sh -c "$(curl -fsSL https://get.docker.com)"
+curl -sSL https://get.docker.com | sh
+curl -s -S -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" > /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
 
 echo "----------------------------------------------------------------"
 echo "### Starting Docker ###"
 echo "----------------------------------------------------------------"
 systemctl start docker
 systemctl enable docker
-
-#echo "----------------------------------------------------------------"
-#echo "### Installing Docker Compose ###"
-#echo "----------------------------------------------------------------"
-#curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-#chmod +x /usr/local/bin/docker-compose
 
 echo "----------------------------------------------------------------"
 echo "### Initiating docker swarm... ###"
