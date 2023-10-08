@@ -4,7 +4,7 @@ tar_file="appliance.tar.gz"
 
 # Need 2CPU
 # Need 4GB RAM
-# Need 25 GB Free Space
+# Need 26 GB Free Space
 
 echo "----------------------------------------------------------------"
 echo "### Checking Pre-Reqs ###"
@@ -12,7 +12,7 @@ echo "----------------------------------------------------------------"
 
 if [ $USER != 'root' ]; then
    echo "----------------------------------------------------------------"
-   echo "### This script must be run as root ###"
+   echo "### This script must be run as root! ###"
    echo "----------------------------------------------------------------"
    exit 1
 fi
@@ -21,7 +21,7 @@ FREE=`df -k / --output=avail "$PWD" | tail -n1`   # df -k not df -h
 if [ $FREE -lt 27262976 ]; then # 26G = 26*1024*1024k 
      # less than 26GBs free!
      echo "----------------------------------------------------------------"
-     echo "### The installation requires 26GB Free on the root partition (/) ###"
+     echo "### The installation requires 26 GB Free on the root partition (/)! ###"
      echo "----------------------------------------------------------------"
      exit 1
 fi
@@ -29,18 +29,28 @@ fi
 CPUS=`getconf _NPROCESSORS_ONLN`
 if [ $CPUS -lt 2 ]; then
      echo "----------------------------------------------------------------"
-     echo "### WARNING: 2CPUS Required! ###"
+     echo "### WARNING: 2 CPUS Required! ###"
      echo "----------------------------------------------------------------"
      exit 1
 fi
 
-RAM=`sudo dmidecode -t 17 | grep "Size.*GB" | awk '{s+=$2} END {print $2}'`
-if [ $RAM -lt 4 ]; then
-     echo "----------------------------------------------------------------"
-     echo "### WARNING: 4GB RAM Required! ###"
-     echo "----------------------------------------------------------------"
-     exit 1
-fi
+RAM=`dmidecode -t 17 | grep "Size.*GB" | awk '{s+=$2} END {print $2}'`
+if [ ${#RAM} != 0 ]; then
+     if [ $RAM -lt 4 ]; then
+          echo "----------------------------------------------------------------"
+          echo "### WARNING: 4 GB RAM Required! ###"
+          echo "----------------------------------------------------------------"
+          exit 1
+     fi
+else
+     RAM=`dmidecode -t 17 | grep "Size.*MB" | awk '{s+=$2} END {print $2}'`
+          if [ $RAM -lt 4096 ]; then
+          echo "----------------------------------------------------------------"
+          echo "### WARNING: 4096 MB RAM Required! ###"
+          echo "----------------------------------------------------------------"
+          exit 1
+     fi
+fi 
 
 echo "----------------------------------------------------------------"
 echo "### Build Swapfile ###"
@@ -63,6 +73,33 @@ echo "### Allow ssh Password Authentication ###"
 echo "----------------------------------------------------------------"
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 systemctl restart sshd
+
+echo "----------------------------------------------------------------"
+echo "### Set Defaults ###"
+echo "----------------------------------------------------------------"
+echo "
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+net.ipv4.ip_forward = 1
+" >>/etc/sysctl.conf
+
+echo "
+{
+  "log-driver": "json-file",
+  "log-opts": {"max-size": "100m", "max-file": "3"}
+}
+" >>/etc/docker/daemon.json
+
+echo "----------------------------------------------------------------"
+echo "### Set Defaults ###"
+echo "----------------------------------------------------------------"
+# remove/purge python2
+apt purge python2.7-minimal libpython2.7-minimal -y
+
+# create python to python3 symbolic link
+ln -s /usr/bin/python3 /usr/bin/python
+
 
 echo "----------------------------------------------------------------"
 echo "### Unzipping arhive and installing files ###"
@@ -134,9 +171,12 @@ echo "----------------------------------------------------------------"
 docker swarm init
 docker load -i $temp_dir/appliance/images/*
 
+touch -f /loginvsi/first_run.chk
+
 echo "----------------------------------------------------------------"
 echo "### Perform first run manually - default admin credentials will be set ###"
 echo "as root:"
+echo "domainname <yourdnssuffix ie: us-west-1.compute.amazonaws.com>"
 echo "sh /loginvsi/bin/firstrun"
 echo "after reboot, reconnect as admin and the installer will finish"
 echo "----------------------------------------------------------------"
