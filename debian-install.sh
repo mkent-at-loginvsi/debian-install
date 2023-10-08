@@ -1,6 +1,7 @@
 #!/bin/bash
 temp_dir="/install/debian-install"
 tar_file="appliance.tar.gz"
+password="admin"
 
 # Need 2CPU
 # Need 4GB RAM
@@ -55,17 +56,18 @@ fi
 echo "----------------------------------------------------------------"
 echo "### Build Swapfile ###"
 echo "----------------------------------------------------------------"
-sudo dd if=/dev/zero of=/swapfile count=4096 bs=1MB
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
+dd if=/dev/zero of=/swapfile count=4096 bs=1MB
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
 echo '/swapfile swap swap defailts 0 0'|sudo tee -a /etc/fstab
 
 echo "----------------------------------------------------------------"
 echo "### Create Admin Account ###"
 echo "----------------------------------------------------------------"
-sudo adduser -m adminrR@239
-sudo usermod -aG sudo admin
+adduser -m admin
+usermod -aG sudo admin
+echo "admin:$password" | chpasswd
 
 echo "----------------------------------------------------------------"
 echo "### Allow ssh Password Authentication ###"
@@ -135,7 +137,8 @@ sudo apt-get install \
      ca-certificates \
      curl \
      gnupg \
-     lsb-release
+     lsb-release \
+     nano
 
 #sudo sh get-docker.sh
 #sh -c "$(curl -fsSL https://get.docker.com)"
@@ -155,12 +158,27 @@ echo "----------------------------------------------------------------"
 docker swarm init
 docker load -i $temp_dir/appliance/images/*
 
+echo "$password" | base64 >/home/admin/.password
+
+
+echo "----------------------------------------------------------------"
+echo "### Fix firstrun ###"
+echo "----------------------------------------------------------------"
+sed -i '#echo "Resetting SSH keys..."#d' /loginvsi/bin/firstrun
+sed -i '#/etc/init.d/ssh stop#d' /loginvsi/bin/firstrun
+sed -i '#rm -f /etc/ssh/ssh_host_*#d' /loginvsi/bin/firstrun
+sed -i '#/etc/init.d/ssh start#d' /loginvsi/bin/firstrun
+sed -i '#dpkg-reconfigure -f noninteractive openssh-server#d' /loginvsi/bin/firstrun
+
+echo "----------------------------------------------------------------"
+echo "### completing firstrun ###"
+echo "----------------------------------------------------------------"
 touch -f /loginvsi/first_run.chk
 
 echo "----------------------------------------------------------------"
 echo "### Perform first run manually - default admin credentials will be set ###"
 echo "as root:"
 echo "domainname <yourdnssuffix ie: us-west-1.compute.amazonaws.com>"
-echo "sh /loginvsi/bin/firstrun"
+echo "bash /loginvsi/bin/firstrun"
 echo "after reboot, reconnect as admin and the installer will finish"
 echo "----------------------------------------------------------------"
