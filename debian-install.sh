@@ -94,8 +94,12 @@ sudo apt-get remove -y docker \
                          containerd \
                          runc
 
-sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
-
+sudo apt-get purge docker-ce \
+                    docker-ce-cli \
+                    containerd.io \
+                    docker-buildx-plugin \
+                    docker-compose-plugin \
+                    docker-ce-rootless-extras
 
 #Install packages
 #rpm -ivh --nodeps $temp_dir/appliance/*.rpm
@@ -118,12 +122,11 @@ echo "----------------------------------------------------------------"
 systemctl start docker
 systemctl enable docker
 
-
-echo "----------------------------------------------------------------"
-echo "### Installing Docker Compose ###"
-echo "----------------------------------------------------------------"
-curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+#echo "----------------------------------------------------------------"
+#echo "### Installing Docker Compose ###"
+#echo "----------------------------------------------------------------"
+#curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+#chmod +x /usr/local/bin/docker-compose
 
 echo "----------------------------------------------------------------"
 echo "### Initiating docker swarm... ###"
