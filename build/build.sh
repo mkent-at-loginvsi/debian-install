@@ -30,9 +30,7 @@ echo "----------------------------------------------------------------"
 echo "### Install Packages ###"
 echo "----------------------------------------------------------------"
 apt-get update -qq
-apt-get install -y \
-     unzip \ 
-     libguestfs-tools
+apt-get install -y unzip libguestfs-tools
 
 if [ -z "$resumedir" ]; then
 # Create Build Directory
