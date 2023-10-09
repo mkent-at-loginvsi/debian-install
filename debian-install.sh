@@ -52,7 +52,19 @@ else
           echo "----------------------------------------------------------------"
           exit 1
      fi
-fi 
+fi
+
+echo "----------------------------------------------------------------"
+echo "### Install Packages ###"
+echo "----------------------------------------------------------------"
+apt-get update -qq
+apt-get install \
+     ca-certificates \
+     curl \
+     gnupg \
+     lsb-release \
+     unzip \
+     nano
 
 echo "----------------------------------------------------------------"
 echo "### Build Swapfile ###"
@@ -152,13 +164,6 @@ sudo apt-get purge -y docker-ce \
                     docker-ce-rootless-extras
 
 sudo apt-get update -qq
-
-sudo apt-get install \
-     ca-certificates \
-     curl \
-     gnupg \
-     lsb-release \
-     nano
 
 #sudo sh get-docker.sh
 #sh -c "$(curl -fsSL https://get.docker.com)"
