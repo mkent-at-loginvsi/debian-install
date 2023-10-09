@@ -16,7 +16,6 @@ export OUTPUT_DIR=$WORK_DIR/..
 echo "----------------------------------------------------------------"
 echo "Install Archive will be written to $OUTPUT_DIR"
 echo "----------------------------------------------------------------"
-
 # Disk space check
 FREE=`df -k / --output=avail "$PWD" | tail -n1`   # df -k not df -h
 if [ $FREE -lt 38990768 ]; then               # 40G = 26*1024*1024k (Kibibyte)
@@ -27,6 +26,14 @@ if [ $FREE -lt 38990768 ]; then               # 40G = 26*1024*1024k (Kibibyte)
      #exit
 fi
 
+echo "----------------------------------------------------------------"
+echo "### Install Packages ###"
+echo "----------------------------------------------------------------"
+apt-get update -qq
+apt-get install -y \
+     unzip \ 
+     libguestfs-tools
+
 if [ -z "$resumedir" ]; then
 # Create Build Directory
 echo "----------------------------------------------------------------"
@@ -35,6 +42,7 @@ echo "----------------------------------------------------------------"
 dir="build-$(date +%Y_%m_%d_%H_%M_%S)"
 export BUILD_DIR="$PWD/$dir"
 out_dir="appliance"
+
 mkdir $dir
 echo "----------------------------------------------------------------"
 echo "Relative Build Direcory: $dir"
@@ -100,8 +108,6 @@ fi
 echo "----------------------------------------------------------------"
 echo "Unzipping Virtual Appliance VHD $BUILD_DIR/$applianceFileZip"
 echo "----------------------------------------------------------------"
-dpkg -l | grep -qw unzip || sudo apt install -y unzip
-
 if ! [ -f $BUILD_DIR/$applianceFileVhd ]; then
   unzip -d $BUILD_DIR $BUILD_DIR/$applianceFileZip
 fi
@@ -110,7 +116,6 @@ fi
 echo "----------------------------------------------------------------"
 echo "Mounting Virtual Hard Drive"
 echo "----------------------------------------------------------------"
-sudo apt install -y libguestfs-tools
 sudo mkdir /mnt/vhd
 sudo chmod 777 /mnt/vhd
 
