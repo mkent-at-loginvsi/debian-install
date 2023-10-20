@@ -189,11 +189,20 @@ echo "$password" | base64 >/home/admin/.password
 echo "----------------------------------------------------------------"
 echo "### Fix firstrun ###"
 echo "----------------------------------------------------------------"
-sed -i '#echo "Resetting SSH keys..."#d' /loginvsi/bin/firstrun
-sed -i '#/etc/init.d/ssh stop#d' /loginvsi/bin/firstrun
-sed -i '#rm -f /etc/ssh/ssh_host_*#d' /loginvsi/bin/firstrun
-sed -i '#/etc/init.d/ssh start#d' /loginvsi/bin/firstrun
-sed -i '#dpkg-reconfigure -f noninteractive openssh-server#d' /loginvsi/bin/firstrun
+sed -i '\|echo "Resetting SSH keys..."|d' /loginvsi/bin/firstrun
+sed -i '\|etc/init.d/ssh stop|d' /loginvsi/bin/firstrun
+sed -i '\|rm -f /etc/ssh/ssh_host_*|d' /loginvsi/bin/firstrun
+sed -i '\|/etc/init.d/ssh start|d' /loginvsi/bin/firstrun
+sed -i '\|dpkg-reconfigure -f noninteractive openssh-server|d' /loginvsi/bin/firstrun
+
+echo "----------------------------------------------------------------"
+echo "### Prevent Cloud Init changing hostname ###"
+echo "----------------------------------------------------------------"
+
+sed -i '/preserve_hostname: false,preserve_hostname: true/g' /etc/cloud/cloud.cfg
+sed -i 's/- set_hostname/#- set_hostname/g' /etc/cloud/cloud.cfg
+sed -i 's/- update_hostname/#- set_hostname/g' /etc/cloud/cloud.cfg
+sed -i 's/- update_etc_hosts/#- set_hostname/g' /etc/cloud/cloud.cfg
 
 echo "----------------------------------------------------------------"
 echo "### completing firstrun ###"
@@ -205,5 +214,5 @@ echo "### Perform first run manually - default admin credentials will be set ###
 echo "as root:"
 echo "domainname <yourdnssuffix ie: us-west-1.compute.amazonaws.com>"
 echo "bash /loginvsi/bin/firstrun"
-echo "after reboot, reconnect as admin and the installer will finish"
+echo ""
 echo "----------------------------------------------------------------"
