@@ -148,10 +148,6 @@ cp -r /mnt/vhd/loginvsi $build_out/
 mkdir -p $build_out/etc/systemd/system/
 cp -f /mnt/vhd/etc/systemd/system/loginvsid.service $build_out/etc/systemd/system/loginvsid.service
 
-# Copy rpms
-mkdir -p $build_out/rpms
-cp -r $BUILD_DIR/*.rpm $build_out/rpms/
-
 # Copy Docker Images
 imageFile="images.tar.gz"
 mkdir -p $build_out/images
