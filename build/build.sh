@@ -61,7 +61,7 @@ echo "----------------------------------------------------------------"
 fi
 
 # Download ISO
-isoFile="LoginEnterprise-5.9.9.iso"
+isoFile="LoginEnterprise-5.10.2.iso"
 echo "----------------------------------------------------------------"
 echo "Downloading Update ISO to $BUILD_DIR/$isoFile"
 echo "----------------------------------------------------------------"
@@ -92,8 +92,8 @@ if ! [ -d /media/iso/update ]; then
 fi
 
 # Download Appliance VHD zip
-applianceFileZip="AZ-VA-LoginEnterprise-5.9.9.zip"
-applianceFileVhd="AZ-VA-LoginEnterprise-5.9.9.vhd"
+applianceFileZip="AZ-VA-LoginEnterprise-5.10.2.zip"
+applianceFileVhd="AZ-VA-LoginEnterprise-5.10.2.vhd"
 echo "----------------------------------------------------------------"
 echo "Downloading Virtual Appliance to $BUILD_DIR/$applianceFileZip"
 echo "----------------------------------------------------------------"
@@ -122,7 +122,7 @@ LIBGUESTFS_BACKEND=direct
 export LIBGUESTFS_BACKEND
 
 if ! [ -d /mnt/vhd/loginvsi ]; then
-  guestmount --add $mountpath/AZ-VA-LoginEnterprise-5.9.9.vhd --ro /mnt/vhd/ -m /dev/sda1
+  guestmount --add $mountpath/AZ-VA-LoginEnterprise-5.10.2.vhd --ro /mnt/vhd/ -m /dev/sda1
 fi
 
 # Fail if VHD doesn't exist
